@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
 
 """
-Auto-ML Multi-Agent Data Scientist System
+Agentic ML Assistant
 
 This module implements a multi-agent system that automates repetitive data science tasks
 including exploratory data analysis (EDA), data cleaning, feature engineering, and
@@ -21,8 +19,8 @@ Configuration:
     - Create a .env file in the project root with: GOOGLE_API_KEY=your_api_key_here
     - Install dependencies: pip install -r requirements.txt
 
-Author: Auto-ML Multi-Agent System
-License: See project license
+Author: Dinesh Katiyar
+License: MIT
 """
 
 # # Auto-ML Multi-Agent Data Scientist
