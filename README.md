@@ -1,6 +1,6 @@
 # Agentic AI - ML Assistant
 
-An intelligent multi-agent system that automates machine learning workflows using Google's Agent Development Kit (ADK). This application provides a Streamlit-based UI for automated data science tasks including exploratory data analysis (EDA), data cleaning, feature engineering, and model training.
+An intelligent multi-agent system that automates machine learning workflows using Google's Agent Development Kit (ADK). This application provides a modern web interface built with React/Next.js frontend and FastAPI backend for automated data science tasks including exploratory data analysis (EDA), data cleaning, feature engineering, and model training.
 
 ## 🚀 Features
 
@@ -11,12 +11,18 @@ An intelligent multi-agent system that automates machine learning workflows usin
   - **Reviewer Agent**: Reviews and improves code quality
   - **Code Execution Agent**: Executes code and provides comprehensive summaries
 
-- **Streamlit Web Interface**: User-friendly UI for:
+- **Modern Web Interface**: React/Next.js frontend with:
+  - Resizable and collapsible configuration sidebar
   - CSV file upload
   - Google API key input
   - Target variable specification
   - Model selection (Supervised and Unsupervised)
-  - Real-time results display
+  - Real-time results display with structured formatting
+
+- **RESTful API**: FastAPI backend providing:
+  - File upload handling
+  - Pipeline execution
+  - JSON responses
 
 - **Supported ML Models**:
   - **Supervised**: RandomForest, LogisticRegression, XGBoost, SVM, KNN, NaiveBayes, AdaBoost, ExtraTrees, GradientBoosting, DecisionTree
@@ -33,63 +39,86 @@ An intelligent multi-agent system that automates machine learning workflows usin
 ## 📋 Requirements
 
 - Python 3.12+
+- Node.js 18+
 - Google API Key (Gemini API)
-- See `requirements.txt` for full dependency list
 
 ## 🛠️ Installation
 
-1. **Clone the repository**:
+### Backend Setup
+
+1. **Navigate to backend directory**:
    ```bash
-   git clone <repository-url>
-   cd AgenticMLAssistant
+   cd backend
    ```
 
-2. **Install dependencies**:
+2. **Install Python dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Get a Google API Key**:
-   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Create a new API key
-   - You'll enter this in the Streamlit UI (no .env file needed)
+3. **Start the FastAPI server**:
+   ```bash
+   python main.py
+   ```
+   
+   Or using uvicorn directly:
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+   Backend will run on `http://localhost:8000`
+
+### Frontend Setup
+
+1. **Navigate to frontend directory**:
+   ```bash
+   cd frontend
+   ```
+
+2. **Install Node.js dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the Next.js development server**:
+   ```bash
+   npm run dev
+   ```
+
+   Frontend will run on `http://localhost:3000`
 
 ## 🎯 Usage
 
-### Starting the Application
-
-```bash
-streamlit run app.py
-```
-
-The application will open in your default web browser at `http://localhost:8501`
-
-### Using the UI
-
-1. **Enter Google API Key**: 
-   - Input your Google API key in the sidebar (password field)
-
-2. **Upload CSV File**:
-   - Click "Upload CSV file" and select your dataset
-
-3. **Specify Target Variable**:
-   - Enter the name of the target/prediction column (e.g., "Survived", "Class", "Price")
-
-4. **Select ML Model**:
-   - Choose from **Supervised ML Model** dropdown (for classification/regression)
-   - OR choose from **Unsupervised ML Model** dropdown (for clustering)
-   - Select only one model from either category
-
-5. **Run Pipeline**:
-   - Click "🚀 Run ML Model" button
-   - Wait for the multi-agent pipeline to complete
-
-6. **View Results**:
+1. **Start both servers** (backend and frontend)
+2. **Open your browser** to `http://localhost:3000`
+3. **Enter Google API Key**: Input your Google API key in the sidebar
+4. **Upload CSV File**: Click "Upload Data/CSV file" and select your dataset
+5. **Specify Target Variable**: Enter the name of the target/prediction column
+6. **Select ML Model**: Choose from Supervised or Unsupervised ML Model dropdowns
+7. **Run Pipeline**: Click "🚀 Run ML Model" button
+8. **View Results**: 
    - Execution results with metrics and summaries
    - Generated code (expandable)
    - Execution plan (expandable)
 
 ## 🏗️ Architecture
+
+### Project Structure
+
+```
+AgenticMLAssistant/
+├── backend/
+│   ├── main.py              # FastAPI application
+│   ├── ml_ai_agents.py      # Multi-agent system implementation
+│   └── requirements.txt     # Backend dependencies
+├── frontend/
+│   ├── pages/
+│   │   └── index.tsx        # Next.js main page
+│   ├── package.json         # Frontend dependencies
+│   ├── tsconfig.json        # TypeScript configuration
+│   └── next.config.js       # Next.js configuration
+└── README.md
+```
 
 ### Multi-Agent System Flow
 
@@ -104,26 +133,38 @@ Coder Agent → Generates Python code (uses {research})
     ↓
 Reviewer Agent → Reviews and improves code (uses {code})
     ↓
-Code Execution Agent → Executes code and creates summary (uses {reviewed_code})
+Code Execution Agent → Executes code and creates summary
     ↓
-Results Display
+Results Display (via FastAPI → React Frontend)
 ```
 
 ### Key Components
 
-- **`ml_ai_agents.py`**: Core multi-agent system implementation
+- **`backend/ml_ai_agents.py`**: Core multi-agent system implementation
   - Agent definitions and configurations
   - Code extraction and execution functions
   - Pipeline orchestration using SequentialAgent
 
-- **`app.py`**: Streamlit web interface
+- **`backend/main.py`**: FastAPI REST API
+  - File upload handling
+  - Pipeline execution endpoint
+  - CORS configuration
+
+- **`frontend/pages/index.tsx`**: React/Next.js web interface
+  - Resizable/collapsible sidebar
   - File upload and configuration
   - Results parsing and display
   - User interaction handling
 
 ## 📦 Dependencies
 
+### Backend (`backend/requirements.txt`)
+
 ```
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
 python-dotenv>=1.0.0,<2.0.0
 google-adk>=0.1.0
 scikit-learn>=1.3.0,<2.0.0
@@ -131,7 +172,15 @@ pandas>=2.0.0,<3.0.0
 numpy>=1.24.0,<2.0.0
 matplotlib>=3.7.0,<4.0.0
 seaborn>=0.12.0,<1.0.0
-streamlit>=1.28.0
+```
+
+### Frontend (`frontend/package.json`)
+
+```
+next>=14.0.0
+react>=18.2.0
+react-dom>=18.2.0
+axios>=1.6.0
 ```
 
 ## 🔧 Configuration
@@ -139,7 +188,7 @@ streamlit>=1.28.0
 ### API Key Management
 
 The application supports API key input via:
-- **UI Input** (Recommended): Enter directly in the Streamlit sidebar
+- **UI Input** (Recommended): Enter directly in the web interface
 - **Environment Variable** (Optional): Set `GOOGLE_API_KEY` in `.env` file
 
 **Note**: API key entered in UI takes precedence over `.env` file.
@@ -151,8 +200,43 @@ The application supports API key input via:
   - Provides accuracy, ROC-AUC, classification reports
 
 - **Unsupervised Models**: Use for clustering tasks
-  - No target variable needed (though UI still requires it for now)
+  - Requires target variable (for UI consistency)
   - Provides cluster analysis and visualizations
+
+## 📡 API Endpoints
+
+### `POST /api/run-pipeline`
+
+Run the multi-agent ML pipeline.
+
+**Request** (multipart/form-data):
+- `file`: CSV file
+- `api_key`: Google API key
+- `target_variable`: Target column name
+- `model_name`: Selected ML model name
+
+**Response**:
+```json
+{
+  "plan": "...",
+  "research": "...",
+  "code": "...",
+  "reviewed_code": "...",
+  "execution_result": "...",
+  "final_response": "..."
+}
+```
+
+### `GET /api/health`
+
+Health check endpoint.
+
+**Response**:
+```json
+{
+  "status": "ok"
+}
+```
 
 ## 📊 Output Format
 
@@ -187,13 +271,13 @@ The execution summary includes:
 
 ### Common Issues
 
-1. **"Context variable not found: reviewed_code"**
+1. **CORS Errors**
+   - Ensure backend is running on port 8000
+   - Check CORS configuration in `backend/main.py`
+
+2. **"Context variable not found: reviewed_code"**
    - This has been resolved in the latest version
    - The code execution agent now handles missing variables gracefully
-
-2. **"Unclosed connector" warnings**
-   - These are informational and don't affect functionality
-   - Suppressed in the current version
 
 3. **API Key Errors**
    - Ensure your Google API key is valid
@@ -229,6 +313,7 @@ The execution summary includes:
 - API keys are entered as password fields (hidden input)
 - Temporary CSV files are automatically cleaned up after execution
 - No data is stored permanently on the server
+- CORS is configured for localhost only
 
 ## 📄 License
 
@@ -241,16 +326,17 @@ Dinesh Katiyar
 ## 🙏 Acknowledgments
 
 - Google ADK (Agent Development Kit) for multi-agent orchestration
-- Streamlit for the web interface framework
+- FastAPI for the REST API framework
+- Next.js and React for the frontend framework
 - scikit-learn for machine learning models
 
 ## 📚 Additional Resources
 
 - [Google ADK Documentation](https://google.github.io/adk-docs/)
-- [Streamlit Documentation](https://docs.streamlit.io/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Next.js Documentation](https://nextjs.org/docs)
 - [scikit-learn Documentation](https://scikit-learn.org/stable/)
 
 ---
 
 **Note**: This is an automated ML assistant. Always review the generated code and results before using in production environments.
-
