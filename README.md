@@ -83,7 +83,7 @@ An intelligent multi-agent system that automates machine learning workflows usin
 3. **Start the Next.js development server**:
    ```bash
    npm run dev
-   ```
+   ``` 
 
    Frontend will run on `http://localhost:3000`
 
@@ -96,7 +96,7 @@ An intelligent multi-agent system that automates machine learning workflows usin
 5. **Specify Target Variable**: Enter the name of the target/prediction column
 6. **Select ML Model**: Choose from Supervised or Unsupervised ML Model dropdowns
 7. **Run Pipeline**: Click "🚀 Run ML Model" button
-8. **View Results**: 
+8. **View Results**:  
    - Execution results with metrics and summaries
    - Generated code (expandable)
    - Execution plan (expandable)
@@ -338,5 +338,4 @@ Dinesh Katiyar
 - [scikit-learn Documentation](https://scikit-learn.org/stable/)
 
 ---
-
 **Note**: This is an automated ML assistant. Always review the generated code and results before using in production environments.
