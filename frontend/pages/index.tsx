@@ -464,9 +464,9 @@ export default function Home() {
             minHeight: '200px'
           }}>
             <div style={{
-              width: '60px',
-              height: '60px',
-              border: '5px solid rgba(21, 101, 192, 0.2)',
+              width: '30px',
+              height: '30px',
+              border: '3px solid rgba(21, 101, 192, 0.2)',
               borderTopColor: '#1565c0',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
