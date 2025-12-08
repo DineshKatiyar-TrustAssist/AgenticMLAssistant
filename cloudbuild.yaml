@@ -1,0 +1,26 @@
+steps:
+  # Step 1: Wake up the Docker daemon
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker ps']
+
+  # Step 2: Install component & Deploy
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # 1. Install the missing beta component (quietly)
+        apt-get update > /dev/null 2>&1
+        apt-get install -y google-cloud-cli-run-compose > /dev/null 2>&1
+        
+        # 2. Run the deploy command
+        gcloud beta run compose up docker-compose.yml \
+          --region=us-west1 \
+          --quiet
+    env:
+      - 'CLOUDSDK_RUN_REGION=us-west1'
+
+# --- THE FIX FOR YOUR ERROR IS HERE ---
+options:
+  logging: CLOUD_LOGGING_ONLY
