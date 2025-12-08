@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 # Note: public folder is optional - only include if you have static assets
-# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/public ./public 
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
