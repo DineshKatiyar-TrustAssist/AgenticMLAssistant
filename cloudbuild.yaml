@@ -7,8 +7,8 @@ steps:
       - |
         gcloud beta run compose up \
           --service=AgenticMLAssistant \
-          --region=us-central1 \
+          --region=us-west1 \
           --source=. \
           --config=docker-compose.yml
     env:
-      - 'CLOUDSDK_RUN_REGION=us-central1'
+      - 'CLOUDSDK_RUN_REGION=us-west1'
