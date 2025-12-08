@@ -1,0 +1,14 @@
+steps:
+  # Step 1: Deploy using the beta compose command
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud beta run compose up \
+          --service=AgenticMLAssistant \
+          --region=us-central1 \
+          --source=. \
+          --config=docker-compose.yml
+    env:
+      - 'CLOUDSDK_RUN_REGION=us-central1'
