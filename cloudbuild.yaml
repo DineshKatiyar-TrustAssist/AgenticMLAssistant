@@ -13,7 +13,7 @@ steps:
       - |
         gcloud beta run compose up docker-compose.yml \
           --region=us-west1 \
-          --quite
+          --quiet
     env:
       - 'CLOUDSDK_RUN_REGION=us-west1'
 
