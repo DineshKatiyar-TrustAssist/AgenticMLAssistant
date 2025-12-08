@@ -11,11 +11,9 @@ steps:
     args:
       - '-c'
       - |
-        gcloud beta run compose up \
-          --service=AgenticMLAssistant \
+        gcloud beta run compose up docker-compose.yml \
           --region=us-west1 \
-          --source=. \
-          --config=docker-compose.yml
+          --quite
     env:
       - 'CLOUDSDK_RUN_REGION=us-west1'
 
