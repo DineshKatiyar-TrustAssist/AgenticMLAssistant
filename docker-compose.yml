@@ -1,6 +1,5 @@
 version: '3.8'
-
-services:
+name: agentic-ml-assistant services:
   backend:
     build:
       context: ./backend
