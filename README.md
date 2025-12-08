@@ -89,6 +89,31 @@ An intelligent multi-agent system that automates machine learning workflows usin
 
 ## 🎯 Usage
 
+### Option 1: Docker Deployment (Recommended)
+
+1. **Build and start with Docker Compose**:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Access the application**:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+
+3. **View logs**:
+   ```bash
+   docker-compose logs -f
+   ```
+
+4. **Stop services**:
+   ```bash
+   docker-compose down
+   ```
+
+   See [DOCKER.md](./DOCKER.md) for detailed Docker deployment instructions.
+
+### Option 2: Local Development
+
 1. **Start both servers** (backend and frontend)
 2. **Open your browser** to `http://localhost:3000`
 3. **Enter Google API Key**: Input your Google API key in the sidebar
@@ -96,7 +121,7 @@ An intelligent multi-agent system that automates machine learning workflows usin
 5. **Specify Target Variable**: Enter the name of the target/prediction column
 6. **Select ML Model**: Choose from Supervised or Unsupervised ML Model dropdowns
 7. **Run Pipeline**: Click "🚀 Run ML Model" button
-8. **View Results**:  
+8. **View Results**: 
    - Execution results with metrics and summaries
    - Generated code (expandable)
    - Execution plan (expandable)
