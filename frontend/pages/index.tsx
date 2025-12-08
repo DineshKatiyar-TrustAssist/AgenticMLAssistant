@@ -161,7 +161,8 @@ export default function Home() {
     formData.append('model_name', modelName);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/run-pipeline', formData, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await axios.post(`${apiUrl}/api/run-pipeline`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResult(response.data);
