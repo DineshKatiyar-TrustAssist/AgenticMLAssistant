@@ -1,5 +1,11 @@
 steps:
-  # Step 1: Deploy using the beta compose command
+  # Step 1: Wake up the Docker daemon
+  # (Required because 'gcloud beta run compose' needs a running Docker instance)
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker ps']
+
+  # Step 2: Deploy using gcloud
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
@@ -12,3 +18,7 @@ steps:
           --config=docker-compose.yml
     env:
       - 'CLOUDSDK_RUN_REGION=us-west1'
+
+# --- THE FIX FOR YOUR ERROR IS HERE ---
+options:
+  logging: CLOUD_LOGGING_ONLY
