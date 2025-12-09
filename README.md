@@ -14,15 +14,19 @@ An intelligent multi-agent system that automates machine learning workflows usin
 - **Modern Web Interface**: React/Next.js frontend with:
   - Resizable and collapsible configuration sidebar
   - CSV file upload
-  - Google API key input
+  - Google API key input (password-protected)
   - Target variable specification
-  - Model selection (Supervised and Unsupervised)
-  - Real-time results display with structured formatting
+  - Model selection (Supervised and Unsupervised dropdowns)
+  - Real-time loading indicators with spinning wheel
+  - Structured results display with metrics, code blocks, and expandable sections
+  - Color-coded section headers (light green for results, medium green for code/plan)
 
 - **RESTful API**: FastAPI backend providing:
-  - File upload handling
-  - Pipeline execution
+  - File upload handling (multipart/form-data)
+  - Pipeline execution with async support
   - JSON responses
+  - Health check endpoint
+  - Configurable CORS support
 
 - **Supported ML Models**:
   - **Supervised**: RandomForest, LogisticRegression, XGBoost, SVM, KNN, NaiveBayes, AdaBoost, ExtraTrees, GradientBoosting, DecisionTree
@@ -34,7 +38,13 @@ An intelligent multi-agent system that automates machine learning workflows usin
   - Data cleaning and preprocessing
   - Feature engineering
   - Model training and evaluation
-  - Comprehensive execution summaries
+  - Comprehensive execution summaries with structured output
+
+- **Docker Support**:
+  - Separate container deployment (backend + frontend)
+  - Combined container deployment (single container)
+  - Production-ready configurations
+  - Health checks and graceful shutdown
 
 ## 📋 Requirements
 
@@ -91,26 +101,41 @@ An intelligent multi-agent system that automates machine learning workflows usin
 
 ### Option 1: Docker Deployment (Recommended)
 
-1. **Build and start with Docker Compose**:
-   ```bash
-   docker-compose up -d
-   ```
+#### Combined Container (Single Container)
 
-2. **Access the application**:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
+Deploy both frontend and backend in a single container:
 
-3. **View logs**:
-   ```bash
-   docker-compose logs -f
-   ```
+```bash
+# Build the combined container
+docker build -t agentic-ml-assistant .
 
-4. **Stop services**:
-   ```bash
-   docker-compose down
-   ```
+# Run the container
+docker run -d -p 8000:8000 -p 3000:3000 --name agentic-ml agentic-ml-assistant
 
-   See [DOCKER.md](./DOCKER.md) for detailed Docker deployment instructions.
+# Or using docker-compose
+docker-compose -f docker-compose.combined.yml up -d
+```
+
+#### Separate Containers
+
+Deploy frontend and backend as separate containers:
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+**Access the application**:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+
+See [DOCKER.md](./DOCKER.md) for detailed Docker deployment instructions.
 
 ### Option 2: Local Development
 
@@ -135,14 +160,21 @@ AgenticMLAssistant/
 ├── backend/
 │   ├── main.py              # FastAPI application
 │   ├── ml_ai_agents.py      # Multi-agent system implementation
-│   └── requirements.txt     # Backend dependencies
+│   ├── requirements.txt     # Backend dependencies
+│   └── Dockerfile           # Backend Docker configuration
 ├── frontend/
 │   ├── pages/
 │   │   └── index.tsx        # Next.js main page
 │   ├── package.json         # Frontend dependencies
 │   ├── tsconfig.json        # TypeScript configuration
-│   └── next.config.js       # Next.js configuration
-└── README.md
+│   ├── next.config.js       # Next.js configuration
+│   └── Dockerfile           # Frontend Docker configuration
+├── Dockerfile               # Combined container Dockerfile
+├── docker-compose.yml       # Docker Compose for separate containers
+├── docker-compose.combined.yml  # Docker Compose for combined container
+├── .dockerignore            # Docker ignore patterns
+├── DOCKER.md                # Docker deployment guide
+└── README.md                # This file
 ```
 
 ### Multi-Agent System Flow
@@ -167,8 +199,10 @@ Results Display (via FastAPI → React Frontend)
 
 - **`backend/ml_ai_agents.py`**: Core multi-agent system implementation
   - Agent definitions and configurations
-  - Code extraction and execution functions
+  - Code extraction function (`extract_python_code`)
+  - Code execution function (`execute_code`) with error handling
   - Pipeline orchestration using SequentialAgent
+  - State management and event processing
 
 - **`backend/main.py`**: FastAPI REST API
   - File upload handling
@@ -176,10 +210,12 @@ Results Display (via FastAPI → React Frontend)
   - CORS configuration
 
 - **`frontend/pages/index.tsx`**: React/Next.js web interface
-  - Resizable/collapsible sidebar
+  - Resizable/collapsible sidebar with drag handle
   - File upload and configuration
-  - Results parsing and display
-  - User interaction handling
+  - Results parsing and structured display
+  - Loading indicators with CSS animations
+  - Error handling and user feedback
+  - Environment variable support for API URL
 
 ## 📦 Dependencies
 
@@ -299,19 +335,33 @@ The execution summary includes:
 1. **CORS Errors**
    - Ensure backend is running on port 8000
    - Check CORS configuration in `backend/main.py`
+   - For Docker deployments, set `CORS_ORIGINS` environment variable
 
-2. **"Context variable not found: reviewed_code"**
-   - This has been resolved in the latest version
-   - The code execution agent now handles missing variables gracefully
+2. **Docker Build Failures**
+   - Ensure Docker and Docker Compose are installed
+   - Check that all required files are present
+   - Review Docker logs: `docker-compose logs`
 
-3. **API Key Errors**
+3. **Frontend Can't Connect to Backend**
+   - Verify `NEXT_PUBLIC_API_URL` is set correctly
+   - For Docker, use service names (e.g., `http://backend:8000`)
+   - Check network connectivity between containers
+
+4. **API Key Errors**
    - Ensure your Google API key is valid
    - Check that you have access to Gemini API
+   - Verify the API key is entered correctly in the UI
 
-4. **Model Training Errors**
+5. **Model Training Errors**
    - Verify your target variable name matches a column in the CSV
    - Ensure the dataset has sufficient data
    - Check that the target variable has appropriate values for the selected model type
+   - Review execution logs for detailed error messages
+
+6. **Docker Container Issues**
+   - Check container status: `docker ps -a`
+   - View container logs: `docker logs <container-name>`
+   - Restart containers: `docker-compose restart`
 
 ## 📝 Example Usage
 
@@ -338,7 +388,9 @@ The execution summary includes:
 - API keys are entered as password fields (hidden input)
 - Temporary CSV files are automatically cleaned up after execution
 - No data is stored permanently on the server
-- CORS is configured for localhost only
+- CORS is configurable via environment variables
+- Docker containers run as non-root users
+- Health checks ensure service availability
 
 ## 📄 License
 
@@ -354,6 +406,7 @@ Dinesh Katiyar
 - FastAPI for the REST API framework
 - Next.js and React for the frontend framework
 - scikit-learn for machine learning models
+- Docker for containerization support
 
 ## 📚 Additional Resources
 
