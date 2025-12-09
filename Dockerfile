@@ -65,7 +65,7 @@ trap cleanup SIGTERM SIGINT\n\
 \n\
 # Start backend in background\n\
 cd /app/backend\n\
-uvicorn main:app --host 0.0.0.0 --port 8000 &\n\
+uvicorn main:app --host 127.0.0.1 --port 8000 &\n\
 BACKEND_PID=$!\n\
 echo "Backend started with PID: $BACKEND_PID"\n\
 \n\
