@@ -9,7 +9,22 @@ This guide explains how to deploy the Agentic ML Assistant application using Doc
 
 ## Quick Start
 
-### Build and Run with Docker Compose
+### Option 1: Combined Container (Single Container)
+
+Deploy both frontend and backend in a single container:
+
+```bash
+# Build and run combined container
+docker build -t agentic-ml-assistant .
+docker run -d -p 8000:8000 -p 3000:3000 --name agentic-ml agentic-ml-assistant
+
+# Or using docker-compose
+docker-compose -f docker-compose.combined.yml up -d
+```
+
+### Option 2: Separate Containers (Docker Compose)
+
+Deploy frontend and backend as separate containers:
 
 ```bash
 # Build and start all services
@@ -25,6 +40,40 @@ docker-compose down
 The application will be available at:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
+
+## Deployment Options
+
+### Combined Container (Recommended for Simple Deployments)
+
+The `Dockerfile` in the root directory builds both frontend and backend in a single container. This is ideal for:
+- Simple deployments
+- Single-server setups
+- Reduced resource usage
+- Easier management
+
+**Build and run:**
+```bash
+docker build -t agentic-ml-assistant .
+docker run -d -p 8000:8000 -p 3000:3000 \
+  -e CORS_ORIGINS=http://localhost:3000 \
+  -e NEXT_PUBLIC_API_URL=http://localhost:8000 \
+  --name agentic-ml \
+  agentic-ml-assistant
+```
+
+**Using docker-compose:**
+```bash
+docker-compose -f docker-compose.combined.yml up -d
+```
+
+### Separate Containers (Recommended for Production)
+
+Use separate containers for better scalability and resource management:
+
+**Build and run:**
+```bash
+docker-compose up -d
+```
 
 ## Building Individual Services
 
