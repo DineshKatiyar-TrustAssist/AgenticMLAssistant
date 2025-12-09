@@ -162,7 +162,7 @@ export default function Home() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000';
-      const response = await axios.post(`${apiUrl}/api/run-pipeline`, formData, {
+      const response = await axios.post(`/api/run-pipeline`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResult(response.data);
