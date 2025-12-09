@@ -8,16 +8,15 @@ services:
       dockerfile: Dockerfile
     container_name: agentic-ml-assistant
     ports:
-      - "8000:8000"  # Backend
-      - "3000:3000"  # Frontend
+      - "3000:3000"  # Frontend only (backend is internal)
     environment:
       - GOOGLE_GENAI_USE_VERTEXAI=FALSE
       - CORS_ORIGINS=http://localhost:3000,http://localhost:3001
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      # NEXT_PUBLIC_API_URL not needed - using Next.js rewrite for same container
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
       interval: 30s
       timeout: 10s
       retries: 3

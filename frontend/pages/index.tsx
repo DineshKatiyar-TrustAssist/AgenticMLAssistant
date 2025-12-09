@@ -161,8 +161,11 @@ export default function Home() {
     formData.append('model_name', modelName);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000';
-      const response = await axios.post(`/api/run-pipeline`, formData, {
+      // Use relative path - Next.js rewrite will proxy to backend in same container
+      // For separate containers, set NEXT_PUBLIC_API_URL environment variable
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiEndpoint = apiUrl ? `${apiUrl}/api/run-pipeline` : '/api/run-pipeline';
+      const response = await axios.post(apiEndpoint, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResult(response.data);

@@ -63,14 +63,22 @@ cleanup() {\n\
 # Trap signals for graceful shutdown\n\
 trap cleanup SIGTERM SIGINT\n\
 \n\
-# Start backend in background\n\
+# Start backend in background (only accessible from within container)\n\
 cd /app/backend\n\
+echo "Starting backend on port 8000 (localhost only)..."\n\
 uvicorn main:app --host 127.0.0.1 --port 8000 &\n\
 BACKEND_PID=$!\n\
 echo "Backend started with PID: $BACKEND_PID"\n\
 \n\
-# Wait a moment for backend to initialize\n\
-sleep 2\n\
+# Wait for backend to be ready\n\
+echo "Waiting for backend to be ready..."\n\
+for i in {1..30}; do\n\
+  if python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" 2>/dev/null; then\n\
+    echo "Backend is ready!"\n\
+    break\n\
+  fi\n\
+  sleep 1\n\
+done\n\
 \n\
 # Start frontend in background\n\
 cd /app\n\
@@ -88,12 +96,12 @@ RUN useradd -m -u 1000 appuser && \
 
 USER appuser
 
-# Expose ports
-EXPOSE 8000 3000
+# Expose ports (only frontend needs external access)
+EXPOSE 3000
 
-# Health check for backend
+# Health check for backend (using localhost since backend is internal)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')" || exit 1
 
 # Run startup script
 CMD ["/app/start.sh"]
