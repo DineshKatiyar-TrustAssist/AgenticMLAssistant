@@ -167,7 +167,7 @@ export default function Home() {
       });
       setResult(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'An error occurred');
+      setError(err.response?.data?.detail || 'An error occurred when calling backend');
     } finally {
       setLoading(false);
     }
