@@ -45,4 +45,5 @@ ENV HOSTNAME="0.0.0.0"
 
 # Run the application
 CMD ["node", "server.js"]
+#CMD ["sh", "-c", "ls -R /app/.next/server && node server.js"]
 

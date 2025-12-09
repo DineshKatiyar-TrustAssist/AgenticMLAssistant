@@ -1,6 +1,21 @@
 version: '3.8'
 name: agentic-ml-assistant 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agentic-ml-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -20,19 +35,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: agentic-ml-frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:8000
-    depends_on:
-      backend:
-        condition: service_healthy
-    restart: unless-stopped
-
