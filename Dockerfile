@@ -1,5 +1,5 @@
 # Combined Dockerfile for Frontend and Backend
-# This Dockerfile builds both the Next.js frontend and FastAPI backend in a single container
+# This Dockerfile builds both the Next.js frontend  and FastAPI backend in a single container
 
 # Stage 1: Build Frontend
 FROM node:18-alpine AS frontend-builder
