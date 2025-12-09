@@ -89,7 +89,7 @@ RUN useradd -m -u 1000 appuser && \
 USER appuser
 
 # Expose ports
-EXPOSE 8000 3000
+EXPOSE 3000
 
 # Health check for backend
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
