@@ -1,4 +1,4 @@
-# Backend Dockerfile for FastAPI application
+# Backend Dockerfile for FastAPI application (Google Cloud Run optimized)
 FROM python:3.12-slim
 
 # Set working directory
@@ -21,19 +21,25 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application code
 COPY . .
 
-# Create non-root user
-RUN useradd -m -u 1000 appuser && \
+# Create non-root user (Cloud Run best practice)
+RUN useradd -m -u 1000 appuser
+
+# Cloud Run sets PORT environment variable
+# Default to 8080 if not set (Cloud Run default)
+ENV PORT=8080
+
+# Expose port (Cloud Run uses PORT env var, but EXPOSE needs a literal)
+EXPOSE 8080
+
+# Create startup script to handle PORT env var dynamically
+RUN echo '#!/bin/sh\n\
+exec uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080} --timeout-keep-alive 300 --workers 1\n\
+' > /app/start.sh && chmod +x /app/start.sh && \
     chown -R appuser:appuser /app
 
 USER appuser
 
-# Expose port
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
-
 # Run the application
-CMD ["uvicorn", "main:app", "--host", "localhost", "--port", "8000"]
-#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "120"]
+# Cloud Run requires listening on 0.0.0.0 and using PORT env var
+# Increased timeout for long-running ML tasks
+CMD ["/app/start.sh"]
